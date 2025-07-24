@@ -91,7 +91,8 @@
                 <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
                 <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
             </select>
-            <button onclick="testLogin()">اختبار تسجيل الدخول</button>
+            <button onclick="testLogin()">اختبار تسجيل الدخول (Database)</button>
+            <button onclick="testLoginSimple()">اختبار تسجيل الدخول (Simple)</button>
             <div id="loginResult" class="result"></div>
         </div>
 
@@ -147,15 +148,15 @@
             }
         }
 
-        // Test login
+        // Test login with database
         async function testLogin() {
             const resultDiv = document.getElementById('loginResult');
             const studentId = document.getElementById('testStudentId').value;
             const phoneNumber = document.getElementById('testPhone').value;
             const classLevel = document.getElementById('testClass').value;
-            
-            resultDiv.textContent = 'جاري اختبار تسجيل الدخول...';
-            
+
+            resultDiv.textContent = 'جاري اختبار تسجيل الدخول (Database)...';
+
             try {
                 const response = await fetch('/api/login', {
                     method: 'POST',
@@ -168,10 +169,42 @@
                         classLevel: classLevel
                     })
                 });
-                
+
                 const data = await response.json();
-                
-                resultDiv.textContent = JSON.stringify(data, null, 2);
+
+                resultDiv.textContent = 'Database API Result:\n' + JSON.stringify(data, null, 2);
+                resultDiv.className = data.success ? 'result success' : 'result error';
+            } catch (error) {
+                resultDiv.textContent = 'خطأ: ' + error.message;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        // Test simple login without database
+        async function testLoginSimple() {
+            const resultDiv = document.getElementById('loginResult');
+            const studentId = document.getElementById('testStudentId').value;
+            const phoneNumber = document.getElementById('testPhone').value;
+            const classLevel = document.getElementById('testClass').value;
+
+            resultDiv.textContent = 'جاري اختبار تسجيل الدخول (Simple)...';
+
+            try {
+                const response = await fetch('/api/login-simple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentId: studentId,
+                        phoneNumber: phoneNumber,
+                        classLevel: classLevel
+                    })
+                });
+
+                const data = await response.json();
+
+                resultDiv.textContent = 'Simple API Result:\n' + JSON.stringify(data, null, 2);
                 resultDiv.className = data.success ? 'result success' : 'result error';
             } catch (error) {
                 resultDiv.textContent = 'خطأ: ' + error.message;
