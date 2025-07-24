@@ -84,10 +84,13 @@ async function handler(req, res) {
     }
 
     // Authenticate student
+    console.log('🔍 Attempting authentication...');
     const student = await db.authenticateStudent(studentId, phoneNumber, classLevel);
+    console.log('👤 Authentication result:', student ? 'Found' : 'Not found');
 
     if (!student) {
-      return sendError(res, 'Invalid credentials or student not found', 401);
+      console.log('❌ Authentication failed for:', { studentId, phoneNumber });
+      return sendError(res, 'بيانات غير صحيحة أو الطالب غير موجود', 401);
     }
 
     // Return success with student data
@@ -108,8 +111,15 @@ async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Login error:', error);
-    sendError(res, 'Internal server error', 500);
+    console.error('❌ Login error:', error);
+    console.error('❌ Error stack:', error.stack);
+
+    // Send more specific error message
+    const errorMessage = error.message.includes('Database')
+      ? 'خطأ في الاتصال بقاعدة البيانات'
+      : 'حدث خطأ داخلي في الخادم';
+
+    sendError(res, errorMessage, 500);
   }
 }
 
