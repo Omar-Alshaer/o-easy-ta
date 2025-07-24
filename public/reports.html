@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التقارير - O-EASY-TA</title>
+    <link rel="icon" href="icons/O-EASY.ico" type="image/x-icon">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom Theme -->
+    <link href="css/theme.css" rel="stylesheet">
+    <link href="css/floating-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-text);
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 20px;
+            min-height: calc(100vh - 40px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="50" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="30" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-area {
+            padding: 2rem;
+        }
+
+        .report-filters {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-generate {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-generate:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container canvas {
+            max-height: 300px !important;
+            width: 100% !important;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .chart-header h3 {
+            margin: 0;
+            color: var(--dark-text);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #219a52;
+            transform: translateY(-1px);
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .summary-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark-text);
+            font-size: 1.1rem;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+
+        .summary-card .description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-right me-2"></i>
+        العودة للوحة التحكم
+    </a>
+
+    <div class="main-container">
+        <div class="header" data-aos="fade-down">
+            <h1><i class="fas fa-chart-bar me-3"></i>التقارير والإحصائيات</h1>
+            <p>تقارير شاملة عن الأداء الأكاديمي والحضور والمدفوعات</p>
+        </div>
+
+        <div class="content-area">
+            <!-- Report Filters -->
+            <div class="report-filters" data-aos="fade-up">
+                <h3 class="mb-3">
+                    <i class="fas fa-filter me-2"></i>
+                    فلترة التقارير
+                </h3>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>نوع التقرير</label>
+                        <select id="reportType">
+                            <option value="all">جميع التقارير</option>
+                            <option value="attendance">تقرير الحضور</option>
+                            <option value="grades">تقرير الدرجات</option>
+                            <option value="payments">تقرير المدفوعات</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>من تاريخ</label>
+                        <input type="date" id="fromDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>إلى تاريخ</label>
+                        <input type="date" id="toDate">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn-generate" onclick="generateReport()">
+                            <i class="fas fa-chart-line me-2"></i>
+                            إنشاء التقرير
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards" data-aos="fade-up" data-aos-delay="100">
+                <div class="summary-card">
+                    <h4>نسبة الحضور الإجمالية</h4>
+                    <p class="value" id="totalAttendance">85%</p>
+                    <p class="description">من إجمالي الحصص المقررة</p>
+                </div>
+                <div class="summary-card">
+                    <h4>المتوسط الأكاديمي</h4>
+                    <p class="value" id="academicAverage">78%</p>
+                    <p class="description">متوسط جميع الامتحانات</p>
+                </div>
+                <div class="summary-card">
+                    <h4>حالة المدفوعات</h4>
+                    <p class="value" id="paymentStatus">محدث</p>
+                    <p class="description">جميع المدفوعات مسددة</p>
+                </div>
+                <div class="summary-card">
+                    <h4>الترتيب في الصف</h4>
+                    <p class="value" id="classRank">12</p>
+                    <p class="description">من أصل 45 طالب</p>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid" data-aos="fade-up" data-aos-delay="200">
+                <!-- Attendance Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>
+                            <i class="fas fa-calendar-check"></i>
+                            تطور الحضور
+                        </h3>
+                        <button class="download-btn" onclick="downloadChart('attendanceChart')">
+                            <i class="fas fa-download me-1"></i>
+                            تحميل
+                        </button>
+                    </div>
+                    <canvas id="attendanceChart" width="400" height="300"></canvas>
+                </div>
+
+                <!-- Grades Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>
+                            <i class="fas fa-chart-line"></i>
+                            تطور الدرجات
+                        </h3>
+                        <button class="download-btn" onclick="downloadChart('gradesChart')">
+                            <i class="fas fa-download me-1"></i>
+                            تحميل
+                        </button>
+                    </div>
+                    <canvas id="gradesChart" width="400" height="300"></canvas>
+                </div>
+
+                <!-- Subject Performance -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>
+                            <i class="fas fa-book"></i>
+                            الأداء حسب المادة
+                        </h3>
+                        <button class="download-btn" onclick="downloadChart('subjectChart')">
+                            <i class="fas fa-download me-1"></i>
+                            تحميل
+                        </button>
+                    </div>
+                    <canvas id="subjectChart" width="400" height="300"></canvas>
+                </div>
+
+                <!-- Payment Status -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>
+                            <i class="fas fa-money-bill-wave"></i>
+                            حالة المدفوعات
+                        </h3>
+                        <button class="download-btn" onclick="downloadChart('paymentChart')">
+                            <i class="fas fa-download me-1"></i>
+                            تحميل
+                        </button>
+                    </div>
+                    <canvas id="paymentChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom JS -->
+    <script src="js/toast.js"></script>
+    <script src="js/floating-icons.js"></script>
+    <script src="js/reports.js"></script>
+</body>
+</html>

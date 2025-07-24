@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - O-EASY-TA</title>
+    <link rel="icon" href="icons/O-EASY.ico" type="image/x-icon">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom Theme -->
+    <link href="css/theme.css" rel="stylesheet">
+    <link href="css/floating-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-text);
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 20px;
+            min-height: calc(100vh - 40px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="50" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="30" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-area {
+            padding: 2rem;
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--secondary-color);
+            margin: 0 auto 1.5rem;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .profile-id {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin: 0 0 1rem 0;
+        }
+
+        .profile-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge-item {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .info-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-value {
+            color: #6c757d;
+            text-align: left;
+        }
+
+        .edit-btn {
+            background: var(--warning-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .edit-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .info-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-right me-2"></i>
+        العودة للوحة التحكم
+    </a>
+
+    <div class="main-container">
+        <div class="header" data-aos="fade-down">
+            <h1><i class="fas fa-user-circle me-3"></i>الملف الشخصي</h1>
+            <p>معلوماتك الشخصية والأكاديمية</p>
+        </div>
+
+        <div class="content-area">
+            <!-- Profile Header -->
+            <div class="profile-header" data-aos="fade-up">
+                <img id="profilePhoto" src="icons/O-EASY.png" alt="صورة الطالب" class="profile-photo">
+                <h2 class="profile-name" id="profileName">اسم الطالب</h2>
+                <p class="profile-id" id="profileId">رقم الطالب: 0000000</p>
+                <div class="profile-badges">
+                    <span class="badge-item" id="profileClass">الصف الدراسي</span>
+                    <span class="badge-item" id="profileGroup">المجموعة</span>
+                </div>
+            </div>
+
+            <!-- Information Sections -->
+            <div class="info-sections">
+                <!-- Personal Information -->
+                <div class="info-section" data-aos="fade-up" data-aos-delay="100">
+                    <div class="section-header">
+                        <i class="fas fa-user"></i>
+                        المعلومات الشخصية
+                    </div>
+                    <div class="section-content">
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-signature"></i>
+                                الاسم الكامل
+                            </span>
+                            <span class="info-value" id="fullName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-id-card"></i>
+                                رقم الطالب
+                            </span>
+                            <span class="info-value" id="studentId">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-phone"></i>
+                                رقم الهاتف
+                            </span>
+                            <span class="info-value" id="phoneNumber">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-phone-alt"></i>
+                                هاتف ولي الأمر
+                            </span>
+                            <span class="info-value" id="parentPhone">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-calendar"></i>
+                                تاريخ الميلاد
+                            </span>
+                            <span class="info-value" id="birthDate">-</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Academic Information -->
+                <div class="info-section" data-aos="fade-up" data-aos-delay="200">
+                    <div class="section-header">
+                        <i class="fas fa-graduation-cap"></i>
+                        المعلومات الأكاديمية
+                    </div>
+                    <div class="section-content">
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-school"></i>
+                                الصف الدراسي
+                            </span>
+                            <span class="info-value" id="classLevel">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-users"></i>
+                                المجموعة
+                            </span>
+                            <span class="info-value" id="groupName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                تاريخ التسجيل
+                            </span>
+                            <span class="info-value" id="enrollmentDate">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-chart-line"></i>
+                                المتوسط العام
+                            </span>
+                            <span class="info-value" id="overallAverage">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-percentage"></i>
+                                نسبة الحضور
+                            </span>
+                            <span class="info-value" id="attendanceRate">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="info-section" data-aos="fade-up" data-aos-delay="300">
+                    <div class="section-header">
+                        <i class="fas fa-address-book"></i>
+                        معلومات الاتصال
+                    </div>
+                    <div class="section-content">
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                البريد الإلكتروني
+                            </span>
+                            <span class="info-value" id="email">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                العنوان
+                            </span>
+                            <span class="info-value" id="address">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-user-friends"></i>
+                                اسم ولي الأمر
+                            </span>
+                            <span class="info-value" id="parentName">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">
+                                <i class="fas fa-briefcase"></i>
+                                مهنة ولي الأمر
+                            </span>
+                            <span class="info-value" id="parentJob">-</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- System Information -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Custom JS -->
+    <script src="js/toast.js"></script>
+    <script src="js/floating-icons.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

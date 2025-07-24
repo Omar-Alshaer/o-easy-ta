@@ -1,0 +1,25 @@
+{
+  "name": "o-easy-ta-portal",
+  "version": "1.0.0",
+  "description": "O-EASY-TA Student Portal - Simple web interface for students",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js",
+    "prebuild": "echo 'Preparing build...'",
+    "postbuild": "echo 'Build completed!'"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "student-portal",
+    "education",
+    "sqlite",
+    "vercel"
+  ],
+  "author": "O-EASY-TA",
+  "license": "MIT"
+}
