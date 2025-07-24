@@ -25,7 +25,8 @@ const requiredFiles = [
     'payments.html',
     'profile.html',
     'id-card.html',
-    'reports.html'
+    'reports.html',
+    'test.html'
 ];
 
 const requiredDirs = [
