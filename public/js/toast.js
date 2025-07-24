@@ -281,6 +281,7 @@ class ToastManager {
 
 // Initialize global toast manager
 window.toast = new ToastManager();
+console.log('✅ Toast system loaded and ready!');
 
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {

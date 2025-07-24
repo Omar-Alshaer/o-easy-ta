@@ -28,6 +28,9 @@ class AttendancePage {
         await this.loadAttendanceData();
         this.displayStatistics();
         this.displayAttendanceTable();
+
+        // Show welcome message
+        this.showWelcomeMessage();
     }
 
     checkAuth() {
@@ -205,6 +208,32 @@ class AttendancePage {
             month: 'long',
             day: 'numeric'
         });
+    }
+
+    showWelcomeMessage() {
+        if (!this.studentData || !window.toast) return;
+
+        const studentName = this.studentData.full_name;
+
+        // Show welcome toast after a short delay
+        setTimeout(() => {
+            window.toast.info(`مرحباً ${studentName}! 📅`, 'سجل الحضور');
+        }, 800);
+
+        // Show attendance info
+        setTimeout(() => {
+            const totalDays = this.attendanceData.length;
+            const presentDays = this.attendanceData.filter(record => record.status === 'present').length;
+            const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+
+            if (attendanceRate >= 90) {
+                window.toast.success(`معدل حضورك ممتاز: ${attendanceRate}%! 🌟`, 'إحصائيات الحضور');
+            } else if (attendanceRate >= 75) {
+                window.toast.info(`معدل حضورك جيد: ${attendanceRate}%`, 'إحصائيات الحضور');
+            } else {
+                window.toast.warning(`معدل حضورك: ${attendanceRate}% - يحتاج تحسين`, 'إحصائيات الحضور');
+            }
+        }, 2000);
     }
 }
 

@@ -23,6 +23,9 @@ class Dashboard {
         this.updateUserInfo();
         this.loadDashboardStats();
         this.loadRecentActivity();
+
+        // Show welcome message
+        this.showWelcomeMessage();
     }
 
     checkAuth() {
@@ -501,4 +504,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 600);
         });
     });
+
+    // Add welcome message method to Dashboard class
+    Dashboard.prototype.showWelcomeMessage = function() {
+        if (!this.studentData || !window.toast) return;
+
+        const studentName = this.studentData.full_name;
+        const currentHour = new Date().getHours();
+
+        let greeting;
+        if (currentHour < 12) {
+            greeting = 'صباح الخير';
+        } else if (currentHour < 17) {
+            greeting = 'مساء الخير';
+        } else {
+            greeting = 'مساء الخير';
+        }
+
+        // Show welcome toast after a short delay
+        setTimeout(() => {
+            window.toast.info(`${greeting} ${studentName}! 👋`, 'مرحباً بك في بوابة الطلاب');
+        }, 1000);
+
+        // Show additional info toast
+        setTimeout(() => {
+            if (this.studentData.group_name) {
+                window.toast.success(`مجموعتك: ${this.studentData.group_name}`, 'معلومات المجموعة');
+            }
+        }, 2500);
+    };
 });

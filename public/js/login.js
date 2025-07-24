@@ -18,6 +18,7 @@ class LoginSystem {
     init() {
         this.bindEvents();
         this.setupValidation();
+        this.showWelcomeMessage();
     }
 
     bindEvents() {
@@ -147,8 +148,16 @@ class LoginSystem {
                 // Store session data
                 sessionStorage.setItem('studentData', JSON.stringify(result.student));
 
+                // Show success messages
+                const studentName = result.student.full_name;
+
                 // Show success animation
                 this.showSuccessAnimation();
+
+                // Show success toast
+                if (window.toast) {
+                    window.toast.success(`أهلاً وسهلاً ${studentName}!`, 'تم تسجيل الدخول بنجاح');
+                }
 
                 // Redirect to dashboard
                 setTimeout(() => {
@@ -163,7 +172,12 @@ class LoginSystem {
             }
         } catch (error) {
             console.error('Login error:', error);
-            this.showError('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.');
+            const errorMsg = 'حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.';
+            this.showError(errorMsg);
+
+            if (window.toast) {
+                window.toast.error(errorMsg, 'خطأ في الاتصال');
+            }
         } finally {
             this.setLoadingState(false);
         }
@@ -330,4 +344,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // Add welcome message method to LoginSystem class
+    LoginSystem.prototype.showWelcomeMessage = function() {
+        // Show welcome message after page loads
+        setTimeout(() => {
+            if (window.toast) {
+                const currentHour = new Date().getHours();
+                let greeting;
+
+                if (currentHour < 12) {
+                    greeting = 'صباح الخير! ☀️';
+                } else if (currentHour < 17) {
+                    greeting = 'مساء الخير! 🌤️';
+                } else {
+                    greeting = 'مساء الخير! 🌙';
+                }
+
+                window.toast.info(greeting, 'مرحباً بك في بوابة O-EASY-TA');
+            }
+        }, 1500);
+
+        // Show helpful tip
+        setTimeout(() => {
+            if (window.toast) {
+                window.toast.info('أدخل رقم الطالب ورقم الهاتف لتسجيل الدخول', 'نصيحة');
+            }
+        }, 3500);
+    };
 });

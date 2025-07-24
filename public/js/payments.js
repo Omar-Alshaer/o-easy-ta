@@ -29,6 +29,9 @@ class PaymentsPage {
         this.displayStatistics();
         this.displayPaymentsTable();
         this.checkPaymentAlerts();
+
+        // Show welcome message
+        this.showWelcomeMessage();
     }
 
     checkAuth() {
@@ -232,6 +235,36 @@ class PaymentsPage {
             month: 'long',
             day: 'numeric'
         });
+    }
+
+    showWelcomeMessage() {
+        if (!this.studentData || !window.toast) return;
+
+        const studentName = this.studentData.full_name;
+
+        // Show welcome toast after a short delay
+        setTimeout(() => {
+            window.toast.info(`مرحباً ${studentName}! 💳`, 'المدفوعات والمستحقات');
+        }, 800);
+
+        // Show payment status
+        setTimeout(() => {
+            if (this.paymentsData && this.paymentsData.length > 0) {
+                const paidPayments = this.paymentsData.filter(payment => payment.payment_status === 'paid').length;
+                const totalPayments = this.paymentsData.length;
+                const pendingPayments = totalPayments - paidPayments;
+
+                if (pendingPayments === 0) {
+                    window.toast.success('جميع مدفوعاتك محدثة! 🎉', 'حالة المدفوعات');
+                } else if (pendingPayments === 1) {
+                    window.toast.warning('لديك دفعة واحدة معلقة', 'حالة المدفوعات');
+                } else {
+                    window.toast.warning(`لديك ${pendingPayments} دفعات معلقة`, 'حالة المدفوعات');
+                }
+            } else {
+                window.toast.info('لا توجد مدفوعات مسجلة بعد', 'حالة المدفوعات');
+            }
+        }, 2000);
     }
 }
 

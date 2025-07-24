@@ -30,6 +30,9 @@ class GradesPage {
         this.displayStatistics();
         this.displayPerformanceChart();
         this.displayGradesTable();
+
+        // Show welcome message
+        this.showWelcomeMessage();
     }
 
     checkAuth() {
@@ -265,6 +268,37 @@ class GradesPage {
             month: 'short',
             day: 'numeric'
         });
+    }
+
+    showWelcomeMessage() {
+        if (!this.studentData || !window.toast) return;
+
+        const studentName = this.studentData.full_name;
+
+        // Show welcome toast after a short delay
+        setTimeout(() => {
+            window.toast.info(`مرحباً ${studentName}! 📊`, 'درجاتك وتقييماتك');
+        }, 800);
+
+        // Show grades summary
+        setTimeout(() => {
+            if (this.gradesData && this.gradesData.length > 0) {
+                const totalGrades = this.gradesData.reduce((sum, grade) => sum + parseFloat(grade.score || 0), 0);
+                const averageGrade = totalGrades / this.gradesData.length;
+
+                if (averageGrade >= 90) {
+                    window.toast.success(`متوسط درجاتك ممتاز: ${averageGrade.toFixed(1)}! 🏆`, 'الأداء الأكاديمي');
+                } else if (averageGrade >= 80) {
+                    window.toast.success(`متوسط درجاتك جيد جداً: ${averageGrade.toFixed(1)}! 👏`, 'الأداء الأكاديمي');
+                } else if (averageGrade >= 70) {
+                    window.toast.info(`متوسط درجاتك جيد: ${averageGrade.toFixed(1)}`, 'الأداء الأكاديمي');
+                } else {
+                    window.toast.warning(`متوسط درجاتك: ${averageGrade.toFixed(1)} - يمكن تحسينه`, 'الأداء الأكاديمي');
+                }
+            } else {
+                window.toast.info('لا توجد درجات مسجلة بعد', 'الأداء الأكاديمي');
+            }
+        }, 2000);
     }
 }
 
