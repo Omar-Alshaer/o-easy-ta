@@ -133,22 +133,33 @@ class LoginSystem {
                 })
             });
 
+            console.log('📡 Response status:', response.status);
+            console.log('📡 Response headers:', response.headers);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const result = await response.json();
+            console.log('📋 Response data:', result);
 
             if (result.success) {
                 // Store session data
                 sessionStorage.setItem('studentData', JSON.stringify(result.student));
-                
+
                 // Show success animation
                 this.showSuccessAnimation();
-                
+
                 // Redirect to dashboard
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
-                this.showError(result.message || 'فشل في تسجيل الدخول. يرجى التحقق من البيانات.');
-                window.toast.error(result.message || 'فشل في تسجيل الدخول. يرجى التحقق من البيانات.', 'فشل تسجيل الدخول');
+                const errorMsg = result.error || result.message || 'فشل في تسجيل الدخول. يرجى التحقق من البيانات.';
+                this.showError(errorMsg);
+                if (window.toast) {
+                    window.toast.error(errorMsg, 'فشل تسجيل الدخول');
+                }
             }
         } catch (error) {
             console.error('Login error:', error);
