@@ -32,6 +32,26 @@ function sendError(res, message, status = 400) {
 }
 
 /**
+ * Parse request body
+ */
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (error) {
+        reject(error);
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+/**
  * Main handler
  */
 async function handler(req, res) {
@@ -50,10 +70,16 @@ async function handler(req, res) {
   }
 
   try {
-    const { studentId, phoneNumber, classLevel } = req.body;
+    // Parse request body
+    const body = await parseBody(req);
+    console.log('📝 Request body:', body);
+
+    const { studentId, phoneNumber, classLevel } = body;
+    console.log('🔍 Login attempt:', { studentId, phoneNumber, classLevel });
 
     // Validate input
     if (!studentId || !phoneNumber) {
+      console.log('❌ Missing fields:', { studentId, phoneNumber });
       return sendError(res, 'Missing required fields: studentId, phoneNumber');
     }
 
