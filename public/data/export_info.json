@@ -1,0 +1,11 @@
+{
+  "export_date": "2025-08-06T15:28:42.719995",
+  "export_version": "1.0",
+  "database_file": "o_easy_ta.db",
+  "directories": {
+    "student_photos": "student_photos/",
+    "barcodes": "barcodes/",
+    "id_cards": "id_cards/"
+  },
+  "notes": "Exported from O-EASY-TA Desktop Application"
+}
